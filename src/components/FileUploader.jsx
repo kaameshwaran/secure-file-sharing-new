@@ -52,7 +52,7 @@ const FileUploader = () => {
       sx={{ padding: 4, maxWidth: 400, margin: '0 auto' }}
     >
       <Typography variant="h4" gutterBottom>
-        Secure File Uploader
+        File Uploader
       </Typography>
       <TextField
         type="file"
