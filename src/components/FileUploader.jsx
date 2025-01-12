@@ -25,22 +25,43 @@ const FileUploader = () => {
 
     setLoading(true);
 
-    const formData = new FormData();
-    formData.append('file', file);
+    // Read the file as base64
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64FileContent = reader.result.split(',')[1]; // Get base64 string without the "data:image..." part
 
-    try {
-      const response = await axios.post('https://your-api-endpoint/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const payload = {
+        file_name: file.name,
+        file_content: base64FileContent,
+        owner_user_id: 'user123', // Replace with your user ID
+        permissions: {
+          read: ['user123', 'user456'], // Replace with actual users
+          write: ['user123'], // Replace with actual users
         },
-      });
-      alert(`Upload successful! File ID: ${response.data.file_id}`);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      alert('File upload failed.');
-    } finally {
-      setLoading(false);
-    }
+      };
+
+      try {
+        // Axios POST request with 'application/json' Content-Type
+        const response = await axios.post(
+          'https://j1l51l34k4.execute-api.ap-south-1.amazonaws.com/prod/upload',
+          payload,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        alert(`Upload successful! File ID: ${response.data.file_id}`);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('File upload failed.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Read the file as base64
+    reader.readAsDataURL(file);
   };
 
   return (

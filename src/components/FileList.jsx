@@ -19,16 +19,24 @@ const FileList = () => {
   const navigate = useNavigate(); // React Router's navigate function
 
   useEffect(() => {
-    const fetchFiles = async () => {
-      try {
-        const response = await axios.get('https://your-api-endpoint/files');
-        setFiles(response.data);
-      } catch (error) {
-        console.error('Error fetching files:', error);
+  const fetchFiles = async () => {
+    try {
+      const response = await axios.get('https://dc99r06cta.execute-api.ap-south-1.amazonaws.com/prod/files');
+      const data = JSON.parse(response.data.body); // Parse the response body
+      if (Array.isArray(data)) {
+        setFiles(data); // Update the state if it's an array
+      } else {
+        console.error("Expected an array of files, but got:", data);
+        setFiles([]); // In case the data isn't an array, set an empty array
       }
-    };
-    fetchFiles();
-  }, []);
+    } catch (error) {
+      console.error('Error fetching files:', error);
+      setFiles([]); // Fallback in case of error
+    }
+  };
+  fetchFiles();
+}, []);
+
 
   const handleRedirectToUpload = () => {
     navigate('/upload'); // Redirects to the /upload route
